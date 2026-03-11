@@ -1,4 +1,4 @@
-from glayout import MappedPDK, sky130,gf180
+from glayout import MappedPDK, sky130,gf180,ihp130
 from glayout import nmos, pmos, tapring,via_stack
 
 
@@ -76,8 +76,8 @@ def  transmission_gate(
         pdk: MappedPDK,
         width: tuple[float,float] = (1,1),
         length: tuple[float,float] = (None,None),
-        fingers: tuple[int,int] = (1,1),
-        multipliers: tuple[int,int] = (1,1),
+        fingers: tuple[int,int] = (2,2),
+        multipliers: tuple[int,int] = (4,4),
         substrate_tap: bool = False,
         tie_layers: tuple[str,str] = ("met2","met1"),
         **kwargs
@@ -130,20 +130,20 @@ def  transmission_gate(
 
 
 if __name__ == "__main__":
-    comp = transmission_gate(sky130)
+    comp = transmission_gate(ihp130)
     # comp.pprint_ports()
-    comp = add_tg_labels(comp,sky130)
+    comp = add_tg_labels(comp,ihp130)
     comp.name = "TG"
     comp.show()
     #print(comp.info['netlist'].generate_netlist())
-    print("...Running DRC...")
-    drc_result = sky130.drc_magic(comp, "TG")
+    #print("...Running DRC...")
+    #drc_result = ihp130.drc_magic(comp, "TG")
     ## Klayout DRC
     #drc_result = gf180.drc(comp)\n
     
     time.sleep(5)
         
-    print("...Running LVS...")
-    lvs_res=sky130.lvs_netgen(comp, "TG")
-    #print("...Saving GDS...")
-    #comp.write_gds('out_TG.gds')
+    #print("...Running LVS...")
+    #lvs_res=ihp.lvs_netgen(comp, "TG")
+    print("...Saving GDS...")
+    comp.write_gds('out_TG.gds')
