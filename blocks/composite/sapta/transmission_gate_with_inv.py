@@ -101,7 +101,7 @@ def  transmission_gate_with_inv(
     top_level << straight_route(pdk, nfet_ref.ports["multiplier_0_drain_W"], drain_via.ports["bottom_met_E"])
     source_via = top_level << viam2m3
     source_via.move(snap_pt(pfet_ref.ports["multiplier_0_source_E"].center)).movex( snap(pfet_ref.xmax + evaluate_bbox(pfet)[0]/2 ))
-    top_level << straight_route(pdk, pfet_ref.ports["multiplier_0_source_E"], source_via.ports["bottom_met_W"])
+    top_level << straight_route(pdk, pfet_ref.ports["multiplier_0_source_E"], source_via.ports["bottom_met_E"])
     gate_via = top_level << viam2m3
     gate_via.move(snap_pt(nfet_ref.ports["multiplier_0_gate_E"].center)).movex( snap(nfet_ref.xmax + evaluate_bbox(nfet)[0]/2 ))
     top_level << straight_route(pdk, nfet_ref.ports["multiplier_0_gate_E"], gate_via.ports["bottom_met_E"])
@@ -148,7 +148,7 @@ def  transmission_gate_with_inv(
     #top_level << c_route(pdk, gate_via_IP.ports['top_met_W'],  gate_via_IN.ports['top_met_W'],viaoffset=False, e1glayer = 'met2',e2glayer = 'met2',cglayer = 'met3')
     top_level << c_route(pdk,Ifet_P_ref.ports["multiplier_0_gate_W"],Ifet_N_ref.ports["multiplier_0_gate_W"])
     top_level << c_route(pdk, Ifet_P_ref.ports["multiplier_0_drain_E"],  Ifet_N_ref.ports["multiplier_0_drain_E"])
-    top_level << straight_route(pdk, pfet_ref.ports["multiplier_0_gate_W"],  Ifet_P_ref.ports["multiplier_0_drain_W"])
+    top_level << straight_route(pdk, pfet_ref.ports["multiplier_0_gate_W"],  Ifet_P_ref.ports["multiplier_0_drain_E"])
 
 
 
@@ -190,7 +190,7 @@ def  transmission_gate_with_inv(
 if __name__ == "__main__":
     comp = transmission_gate_with_inv(ihp130,width=(1,1),length=(0.15,0.15),fingers=(8,8),multipliers=(1,1),inv_width=(1,1),inv_length=(0.15,0.15),inv_fingers=(1,1),inv_multipliers=(1,1))
     #comp.pprint_ports()
-    comp = add_tg_labels(comp,ihp130)
+    #comp = add_tg_labels(comp,ihp130)
     comp.name = "tg_lv"
     comp.show()
         

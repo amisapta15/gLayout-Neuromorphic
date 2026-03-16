@@ -1103,7 +1103,7 @@ exit
         dimtype_in = type(dims[0])
         dims = [Decimal(str(dim)) for dim in dims] # process in decimals
         grid = 2 * Decimal(str(self.grid_size))
-        grid = grid if grid else Decimal('0.001')
+        grid = grid if grid else Decimal('0.005')
         grid = 2*grid if snap4 else grid
         # snap dims to grid
         snapped_dims = list()

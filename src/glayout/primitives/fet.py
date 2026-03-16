@@ -215,8 +215,17 @@ def multiplier(
             multiplier << straight_route(pdk,gate_S_port,psuedo_Ngateroute)
         # place route met: gate
         gate_width = gate_S_port.center[0] - multiplier.ports["row0_col0_gate_S"].center[0] + gate_S_port.width
-        gate = rename_ports_by_list(via_array(pdk,"poly",gate_route_topmet, size=(gate_width,None),num_vias=(None,gate_rmult), no_exception=True, fullbottom=True),[("top_met_","gate_")])
+        gate = rename_ports_by_list(via_array(pdk,"poly",gate_route_topmet, size=(gate_width,None),num_vias=(None,gate_rmult), no_exception=True, fullbottom=True, lay_every_layer=True),[("top_met_","gate_")])
         gate_ref = align_comp_to_port(gate.copy(), psuedo_Ngateroute, alignment=(None,'b'),layer=pdk.get_glayer("poly"))
+        multiplier.add(gate_ref)
+        # Add metal1 extension to meet minimum area requirement
+        met1_min_area = pdk.get_grule("met1")["min_area"]
+        gate_bbox = evaluate_bbox(gate_ref)
+        met1_extended_width = max(gate_bbox[0], pdk.snap_to_2xgrid(met1_min_area / gate_bbox[1] + 0.2))
+        if met1_extended_width > gate_bbox[0]:
+            met1_extension = rectangle(size=(met1_extended_width, gate_bbox[1]), layer=pdk.get_glayer("met1"), centered=True)
+            met1_extension_ref = multiplier << met1_extension
+            met1_extension_ref.move(gate_ref.center)
         multiplier.add(gate_ref)
         # place route met: source, drain
         sd_width = sdvia_ports[-1].center[0] - sdvia_ports[0].center[0]
