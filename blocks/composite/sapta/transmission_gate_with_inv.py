@@ -37,19 +37,19 @@ def add_tg_labels(tg_in: Component,
     move_info = list()
     # create labels and append to info list
     # vin
-    vinlabel = rectangle(layer=pdk.get_glayer("met2_pin"),size=(0.1,0.1),centered=True).copy()
-    vinlabel.add_label(text="VIN",layer=pdk.get_glayer("met2_label"))
-    move_info.append((vinlabel,tg_in.ports["TG_IN_top_met_E"],None))
+    vinlabel = rectangle(layer=pdk.get_glayer("met3_pin"),size=(0.3,0.3),centered=True).copy()
+    vinlabel.add_label(text="IN",layer=pdk.get_glayer("met3_label"))
+    move_info.append((vinlabel,tg_in.ports["TG_IN_top_met_W"],None))
     
     # vout
-    voutlabel = rectangle(layer=pdk.get_glayer("met2_pin"),size=(0.1,0.1),centered=True).copy()
-    voutlabel.add_label(text="VOUT",layer=pdk.get_glayer("met2_label"))
-    move_info.append((voutlabel,tg_in.ports["TG_OUT_top_met_E"],None))
+    voutlabel = rectangle(layer=pdk.get_glayer("met3_pin"),size=(0.3,0.3),centered=True).copy()
+    voutlabel.add_label(text="OUT",layer=pdk.get_glayer("met3_label"))
+    move_info.append((voutlabel,tg_in.ports["TG_OUT_top_met_W"],None))
 
     # sel
-    voutlabel = rectangle(layer=pdk.get_glayer("met2_pin"),size=(0.1,0.1),centered=True).copy()
-    voutlabel.add_label(text="VOUT",layer=pdk.get_glayer("met2_label"))
-    move_info.append((voutlabel,tg_in.ports["TG_sel_top_met_E"],None))
+    voutlabel = rectangle(layer=pdk.get_glayer("met3_pin"),size=(0.3,0.3),centered=True).copy()
+    voutlabel.add_label(text="SEL",layer=pdk.get_glayer("met3_label"))
+    move_info.append((voutlabel,tg_in.ports["TG_sel_top_met_W"],None))
     
     # move everything to position
     for comp, prt, alignment in move_info:
@@ -80,7 +80,7 @@ def  transmission_gate_with_inv(
     pdk.activate()
     #top level component
     top_level = Component(name="transmission_gate")
-    viam2m3 = via_stack(pdk, "met2", "met3", centered=True)    
+    viam2m3 = via_stack(pdk, "met2", "met3", centered=True,fullbottom=True,fulltop=True)    
     spacing = pdk.util_max_metal_seperation() + 1
     # fet_P_ref.movey(pfet_ref.center[1])
     # fet_P_ref.movex(pfet_ref.xmax + evaluate_bbox(fet_P)[0]/2 + spacing)
@@ -95,15 +95,19 @@ def  transmission_gate_with_inv(
     #Relative move
     pfet_ref.movey(snap(nfet_ref.ymax + evaluate_bbox(pfet_ref)[1]/2 + pdk.util_max_metal_seperation()))
 
+    ## TG IN
     drain_via = top_level << viam2m3
-    drain_via.move(snap_pt(nfet_ref.ports["multiplier_0_drain_W"].center)).movex( snap(nfet_ref.xmax + evaluate_bbox(nfet)[0]/2 ))
-
+    drain_via.move(snap_pt(nfet_ref.ports["multiplier_0_drain_W"].center)).movex(snap(top_level.xmax + evaluate_bbox(pfet)[0]/4 ))
     top_level << straight_route(pdk, nfet_ref.ports["multiplier_0_drain_W"], drain_via.ports["bottom_met_E"])
+    
+    ## TG OUT
     source_via = top_level << viam2m3
-    source_via.move(snap_pt(pfet_ref.ports["multiplier_0_source_E"].center)).movex( snap(pfet_ref.xmax + evaluate_bbox(pfet)[0]/2 ))
+    source_via.move(snap_pt(pfet_ref.ports[f"multiplier_0_source_E"].center)).movex(snap(pfet_ref.xmax))
     top_level << straight_route(pdk, pfet_ref.ports["multiplier_0_source_E"], source_via.ports["bottom_met_E"])
+    
+    ## TG SEL
     gate_via = top_level << viam2m3
-    gate_via.move(snap_pt(nfet_ref.ports["multiplier_0_gate_E"].center)).movex( snap(nfet_ref.xmax + evaluate_bbox(nfet)[0]/2 ))
+    gate_via.move(snap_pt(nfet_ref.ports[f"multiplier_0_gate_E"].center)).movex(snap(nfet_ref.xmax ))
     top_level << straight_route(pdk, nfet_ref.ports["multiplier_0_gate_E"], gate_via.ports["bottom_met_E"])
     
     #######################################################
@@ -190,7 +194,7 @@ def  transmission_gate_with_inv(
 if __name__ == "__main__":
     comp = transmission_gate_with_inv(ihp130,width=(1,1),length=(0.15,0.15),fingers=(8,8),multipliers=(1,1),inv_width=(1,1),inv_length=(0.15,0.15),inv_fingers=(1,1),inv_multipliers=(1,1))
     #comp.pprint_ports()
-    #comp = add_tg_labels(comp,ihp130)
+    comp = add_tg_labels(comp,ihp130)
     comp.name = "tg_lv"
     comp.show()
         
