@@ -3,7 +3,6 @@ wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge
    93  unset PYTHONPATH
    94  source ~/miniforge/bin/activate
    95  conda create -n ve python=3.10 -y
-   96  conda activate ve]
    97  conda activate ve
    98  conda install pip
    99  pip install -e .
