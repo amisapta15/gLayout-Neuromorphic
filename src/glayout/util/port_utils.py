@@ -1,13 +1,25 @@
 from pydantic import validate_arguments
-from gdsfactory.typings import Component, ComponentReference
-from gdsfactory.components.rectangle import rectangle
-from gdsfactory.port import Port
+from glayout.backend import Component, ComponentReference, Port, rectangle
 from typing import Callable, Union, Optional
 from decimal import Decimal
 from pathlib import Path
 import pickle
-from PrettyPrint import PrettyPrintTree
 import math
+
+try:
+	from PrettyPrint import PrettyPrintTree
+except ImportError:
+	try:
+		from prettyprinttree import PrettyPrintTree
+	except ImportError:
+		class PrettyPrintTree:  # type: ignore[override]
+			"""Fallback shim when pretty-print helpers are unavailable."""
+
+			def __init__(self, *args, **kwargs):
+				pass
+
+			def __call__(self, *args, **kwargs):
+				return ""
 
 
 @validate_arguments
@@ -489,7 +501,6 @@ def print_port_tree_all_cells() -> list:
 	from glayout.flow.routing.c_route import c_route
 	from glayout.flow.routing.L_route import L_route
 	from glayout.flow.pdk.sky130_mapped import sky130_mapped_pdk as pdk
-	from gdsfactory.port import Port
 	print("saving via_stack, via_array, opamp, mimcap, mimcap_array, tapring, multiplier, nmos, pmos, diff_pair, straight_route, c_route, L_route Ports to txt files")
 	celllist = list()
 	celllist.append(["via_stack",via_stack(pdk, "active_diff","met5")])
