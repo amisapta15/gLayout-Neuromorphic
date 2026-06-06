@@ -199,4 +199,4 @@ if __name__ == "__main__":
     comp.show()
         
     print("...Saving GDS...")
-    comp.write_gds('out_TG.gds')
+    comp.write_gds('out_final.gds')

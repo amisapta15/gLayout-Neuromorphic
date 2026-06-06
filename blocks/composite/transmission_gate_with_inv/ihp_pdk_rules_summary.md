@@ -9,6 +9,14 @@ This document summarizes the IHP 130nm BiCMOS Open Source PDK rules as they are 
 > - [mappedpdk.py](file:///home/sapta/eda/designs/hh/gLayout-IHP130/src/glayout/pdk/mappedpdk.py) — Base [MappedPDK](file:///home/sapta/eda/designs/hh/gLayout-IHP130/src/glayout/pdk/mappedpdk.py#236-1118) class defining the valid generic layers
 
 ---
+---
+
+## 0. Important Layers update
++ Pcells have a Substrate_Layer that glayout doesn't. Without this ptap or ntap is not recognised
++ nSD layer triggers errors by not recognizing the transistors
++ Pwell Layer doesn't exist. Trigger errors.
++ There is a layer called 'nBuLay.drawing which comes with Pcells but doesn't appear
++ There is a heat transfer layer that needs to be deleted
 
 ## 1. GDS Layer Table
 
